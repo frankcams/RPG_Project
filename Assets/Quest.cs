@@ -26,7 +26,7 @@ public class Quest : ScriptableObject
 
         if (rewardWeapon != null)
         {
-            player.inventory.Add(rewardWeapon);
+            player.GetComponent<PlayerInventory>()?.AddEquipment(rewardEquipment);
             Debug.Log($"Received weapon: {rewardWeapon.equipmentName}");
         }
     }

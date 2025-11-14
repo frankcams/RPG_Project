@@ -15,6 +15,9 @@ public class QuestGiver : MonoBehaviour
                 log.AddQuest(quest);
                 questGiven = true;
                 Debug.Log($"{quest.questName} has been added to your quest log.");
+
+                // ✅ Complete the quest and give rewards
+                quest.Complete(player);
             }
         }
         else
