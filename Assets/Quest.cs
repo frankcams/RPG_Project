@@ -20,14 +20,19 @@ public class Quest : ScriptableObject
         isCompleted = true;
         Debug.Log($"Quest Completed: {questName}");
 
-        // Give rewards
+        // ✅ Give rewards
         player.GainXP(rewardXP);
-        player.GetComponent<PlayerInventory>()?.AddGold(rewardGold);
 
-        if (rewardWeapon != null)
+        PlayerInventory inv = player.GetComponent<PlayerInventory>();
+        if (inv != null)
         {
-            player.inventory.Add(rewardWeapon);
-            Debug.Log($"Received weapon: {rewardWeapon.equipmentName}");
+            inv.AddGold(rewardGold);
+
+            if (rewardWeapon != null)
+            {
+                inv.AddEquipment(rewardWeapon);
+                Debug.Log($"Received weapon: {rewardWeapon.equipmentName}");
+            }
         }
     }
 }

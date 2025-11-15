@@ -30,6 +30,7 @@ public class CharacterStats : MonoBehaviour
     public Equipment equippedWeapon;
     public Equipment equippedArmor;
 
+    // -------------------- Unity Lifecycle --------------------
     void Start()
     {
         currentHP = GetTotalHP();
@@ -37,7 +38,7 @@ public class CharacterStats : MonoBehaviour
         levelSystem.onLevelUp += OnLevelUp;
     }
 
-    // 🧮 Total Stats with Equipment
+    // -------------------- Derived Stats --------------------
     public int GetTotalHP()
     {
         int bonus = 0;
@@ -62,14 +63,13 @@ public class CharacterStats : MonoBehaviour
         return defense + bonus;
     }
 
-    // 🗡️ Combat
+    // -------------------- Combat --------------------
     public void TakeDamage(int incomingDamage)
     {
         int actualDamage = Mathf.Max(incomingDamage - GetTotalDefense(), 1);
         if (isDefending) actualDamage /= 2;
 
-        currentHP -= actualDamage;
-        currentHP = Mathf.Max(currentHP, 0);
+        currentHP = Mathf.Max(currentHP - actualDamage, 0);
         Debug.Log($"{characterName} took {actualDamage} damage. HP left: {currentHP}");
     }
 
@@ -79,16 +79,18 @@ public class CharacterStats : MonoBehaviour
         Debug.Log($"{characterName} healed {amount} HP. Current HP: {currentHP}");
     }
 
-    public bool IsDead()
+    public bool IsDead() => currentHP <= 0;
+
+    public void Defend()
     {
-        return currentHP <= 0;
+        isDefending = true;
+        Debug.Log($"{characterName} is defending this turn!");
     }
 
-    // 🔮 Mana
-    public bool HasEnoughMana(int cost)
-    {
-        return currentMP >= cost;
-    }
+    public void ResetDefend() => isDefending = false;
+
+    // -------------------- Mana --------------------
+    public bool HasEnoughMana(int cost) => currentMP >= cost;
 
     public void UseMana(int cost)
     {
@@ -102,11 +104,8 @@ public class CharacterStats : MonoBehaviour
         Debug.Log($"{characterName} restored {amount} MP. Current MP: {currentMP}");
     }
 
-    // 🧠 Leveling
-    public void GainXP(int xp)
-    {
-        levelSystem.GainExperience(xp);
-    }
+    // -------------------- Leveling --------------------
+    public void GainXP(int xp) => levelSystem.GainExperience(xp);
 
     private void OnLevelUp(int newLevel)
     {
@@ -124,7 +123,7 @@ public class CharacterStats : MonoBehaviour
         Debug.Log($"Skill Points available: {skillPoints}");
     }
 
-    // 🧰 Inventory
+    // -------------------- Inventory --------------------
     public void UseItem(int index)
     {
         if (index < 0 || index >= inventory.Count) return;
@@ -134,19 +133,7 @@ public class CharacterStats : MonoBehaviour
         inventory.RemoveAt(index);
     }
 
-    // 🛡️ Defend
-    public void Defend()
-    {
-        isDefending = true;
-        Debug.Log($"{characterName} is defending this turn!");
-    }
-
-    public void ResetDefend()
-    {
-        isDefending = false;
-    }
-
-    // ⚔️ Equipment
+    // -------------------- Equipment --------------------
     public void EquipWeapon(Equipment weapon)
     {
         equippedWeapon = weapon;
@@ -159,7 +146,7 @@ public class CharacterStats : MonoBehaviour
         Debug.Log($"{characterName} equipped armor: {armor.equipmentName}");
     }
 
-    // 🌳 Skill Tree
+    // -------------------- Skills --------------------
     public void TryUnlockSkill(Skill skill)
     {
         if (skillPoints <= 0)
@@ -179,7 +166,6 @@ public class CharacterStats : MonoBehaviour
         }
     }
 
-    // 🔥 Skill Usage
     public void UseSkill(Skill skill)
     {
         if (!skill.isUnlocked)
@@ -205,7 +191,6 @@ public class CharacterStats : MonoBehaviour
         skill.TriggerCooldown();
 
         Debug.Log($"{characterName} used skill: {skill.skillName}!");
-
         // TODO: Add actual skill effect logic here
     }
 }

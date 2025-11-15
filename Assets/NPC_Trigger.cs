@@ -4,7 +4,6 @@ public class NPCTrigger : MonoBehaviour
 {
     private NPC npc;
     private QuestGiver questGiver;
-    private ShopKeeper shopKeeper; // Optional: if you add a shop system
 
     private bool playerInRange = false;
 
@@ -12,7 +11,6 @@ public class NPCTrigger : MonoBehaviour
     {
         npc = GetComponent<NPC>();
         questGiver = GetComponent<QuestGiver>();
-        shopKeeper = GetComponent<ShopKeeper>(); // Optional
     }
 
     void Update()
@@ -47,6 +45,5 @@ public class NPCTrigger : MonoBehaviour
 
         npc?.Interact();
         questGiver?.GiveQuest(playerStats);
-        shopKeeper?.OpenShop(); // Optional
     }
 }
