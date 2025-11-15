@@ -3,57 +3,55 @@ using System.Collections.Generic;
 
 public class PlayerInventory : MonoBehaviour
 {
-    public int gold = 0;
+    [Header("Currency")]
+    [SerializeField] private int gold = 0;   // Player's gold amount
 
-    // ✅ Consumable items (potions, etc.)
-    public List<Item> itemInventory = new List<Item>();
+    [Header("Equipment")]
+    [SerializeField] private List<Equipment> equipmentInventory = new List<Equipment>();
 
-    // ✅ Equipment (weapons, armor, etc.)
-    public List<Equipment> equipmentInventory = new List<Equipment>();
+    // ✅ Public property to safely access gold
+    public int Gold => gold;
 
-    // 💰 Gold management
+    // ✅ Public property to access equipment list (read-only)
+    public IReadOnlyList<Equipment> EquipmentInventory => equipmentInventory;
+
+    /// <summary>
+    /// Adds gold to the player's inventory.
+    /// </summary>
     public void AddGold(int amount)
     {
+        if (amount <= 0) return;
+
         gold += amount;
         Debug.Log($"Received {amount} gold. Total: {gold}");
     }
 
+    /// <summary>
+    /// Attempts to spend gold. Returns true if successful.
+    /// </summary>
     public bool SpendGold(int amount)
     {
+        if (amount <= 0) return false;
+
         if (gold >= amount)
         {
             gold -= amount;
+            Debug.Log($"Spent {amount} gold. Remaining: {gold}");
             return true;
         }
+
+        Debug.Log("Not enough gold!");
         return false;
     }
 
-    // 🎒 Item management
-    public void AddItem(Item item)
-    {
-        if (item != null)
-        {
-            itemInventory.Add(item);
-            Debug.Log($"Added item: {item.itemName}");
-        }
-    }
-
-    public void UseItem(int index, CharacterStats target)
-    {
-        if (index < 0 || index >= itemInventory.Count) return;
-
-        Item item = itemInventory[index];
-        item.Use(target);
-        itemInventory.RemoveAt(index);
-    }
-
-    // 🛡️ Equipment management
+    /// <summary>
+    /// Adds equipment to the inventory.
+    /// </summary>
     public void AddEquipment(Equipment equipment)
     {
-        if (equipment != null)
-        {
-            equipmentInventory.Add(equipment);
-            Debug.Log($"Added equipment: {equipment.equipmentName}");
-        }
+        if (equipment == null) return;
+
+        equipmentInventory.Add(equipment);
+        Debug.Log($"Added equipment: {equipment.equipmentName}");
     }
 }

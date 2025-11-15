@@ -26,8 +26,10 @@ public class Quest : ScriptableObject
         PlayerInventory inv = player.GetComponent<PlayerInventory>();
         if (inv != null)
         {
+            // Add gold if your inventory supports it
             inv.AddGold(rewardGold);
 
+            // Add weapon if one is assigned
             if (rewardWeapon != null)
             {
                 inv.AddEquipment(rewardWeapon);
